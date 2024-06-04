@@ -5,20 +5,22 @@
 #define PF_SPS_MAX_SIZE 1000
 #define PF_SP_MAX_NAME_SIZE 64
 #define PF_SP_MAX_INDEX_STACK_SIZE 30
+#define PF_SP_MIN_MAX_SAVE_SIZE 2
 
 #pragma region Types
 
 struct PROFILE_SAMPLE
 {
-	long			flag;						// 프로파일의 사용 여부. (배열시에만)
-	WCHAR			name[PF_SP_MAX_NAME_SIZE];	// 프로파일 샘플 이름.
+	long			flag;								// 프로파일의 사용 여부. (배열시에만)
+	WCHAR			name[PF_SP_MAX_NAME_SIZE];			// 프로파일 샘플 이름.
 
-	LARGE_INTEGER	startTime;		// 프로파일 샘플 실행 시간.
-	__int64			totalTime;		// 전체 사용시간 카운터 Time.	(출력시 호출회수로 나누어 평균 구함)
-	__int64			minTime[2];		// 최소 사용시간 카운터 Time.	(초단위로 계산하여 저장 / [0] 가장최소 [1] 다음 최소 [2])
-	__int64			maxTime[2];		// 최대 사용시간 카운터 Time.	(초단위로 계산하여 저장 / [0] 가장최대 [1] 다음 최대 [2])
+	LARGE_INTEGER	startTime;							// 프로파일 샘플 실행 시간.
 
-	__int64			callCount;		// 누적 호출 횟수.
+	ULONGLONG		totalTime;							// 전체 사용시간 카운터 Time.	(출력시 호출회수로 나누어 평균 구함)
+	ULONGLONG		minTime[PF_SP_MIN_MAX_SAVE_SIZE];	// 최소 사용시간 카운터 Time.	(초단위로 계산하여 저장 / [0] 가장최소 [1] 다음 최소 [2])
+	ULONGLONG		maxTime[PF_SP_MIN_MAX_SAVE_SIZE];	// 최대 사용시간 카운터 Time.	(초단위로 계산하여 저장 / [0] 가장최대 [1] 다음 최대 [2])
+
+	ULONGLONG		callCount;							// 누적 호출 횟수.
 };
 
 class Profile
@@ -58,6 +60,8 @@ private:
 
 void ProfileBegin(const WCHAR* tag);
 void ProfileEnd();
+
+void SaveProfileData(const char* fileName);
 
 #pragma region Extern Variables
 

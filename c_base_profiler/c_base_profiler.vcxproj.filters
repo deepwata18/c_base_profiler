@@ -20,5 +20,8 @@
     <ClInclude Include="profile.h">
       <Filter>profiler</Filter>
     </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>profiler</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
